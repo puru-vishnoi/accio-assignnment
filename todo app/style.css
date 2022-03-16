@@ -1,0 +1,22 @@
+body{
+    background-color: grey;
+}
+
+
+.heads{
+text-align: center;
+
+}
+
+.main-task-sec{
+    color: black;
+    justify-content: center;  
+}
+
+.main-task-sec input{
+  text-align: center;
+  padding:10px;
+  margin:20px;
+  
+}
+

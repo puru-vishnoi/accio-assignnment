@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">;
+    <title>Document</title>
+</head>
+<body onload="updateTasks()">
+
+    <main>
+        <div class="main-task-sec">
+            
+              <div class="headers">  
+                    <h1 class="heads">TO-DO-LIST</h1>
+              </div>
+            <input type="text" id="text_input">
+            <input type="date" name="" id="date_input">
+            <button id="add-task" onclick="addMyTask()">Add Task</button>
+       </div>
+
+        <ul  id="task-box-rep">
+        </ul>
+    </main>
+
+    <script>
+let storedtask=[];
+
+storedtask=JSON.parse(localStorage.getItem("tasklists")) || [];
+
+function updateTasks(){
+    storedtask.forEach(task => {
+        let newtaskname=task.title;
+        let newtaskdate=task.date;
+        let nextTask=document.createElement("li");
+       
+    nextTask.innerHTML= 
+     `<span class= "task-span"> ${newtaskname}</span>
+      <span class= "date-span"> ${newtaskdate}</span> 
+      <button class= delete-button onclick="deletetask(event)"> X
+      </button>
+       <button  class= edit-button  onclick="editIt(event)">Edit
+       </button> 
+     `;
+
+    document.getElementById("task-box-rep").appendChild(nextTask);
+  
+
+    }) 
+}
+
+  function updatestorage(){
+      let taskarray=[];
+
+      let tasks=document.getElementsByTagName("li");
+      let tasklists=Array.from(tasks);
+
+      tasklists.forEach(Element => {
+          let obj={};
+          obj.title=Element.children[0].innerText;
+          obj.date=Element.children[1].innerText;
+
+          taskarray.push(obj);
+          
+      });
+      localStorage.setItem("tasklists",JSON.stringify(taskarray));
+      storedtask=JSON.parse(localStorage.getItem("tasklists"));
+
+  }
+
+    function addMyTask(){
+      let textselector=document.getElementById("text_input").value;
+      let dateselector=document.getElementById("date_input").value;
+      let nextTask=document.createElement("li");
+      nextTask.innerHTML=  `
+      <span> ${textselector}</span>
+       <span> ${dateselector}</span> 
+       <button onclick="deletetask(event)"> X</button>
+        <button onclick="editIt(event)">Edit</button>
+         `;
+         
+      document.getElementById("task-box-rep").appendChild(nextTask);
+      console.log(nextTask);
+      nextTask.style.add({
+            "list-style":"none",
+            "text-align": "center";
+              "padding":"10px",
+              "margin":"20px"
+              });
+      updatestorage();
+
+    }
+
+
+function deletetask(event){
+    let deletedparent=event.target.parentNode;
+    if(event.target.parentNode){
+        deletedparent.remove();
+        updatestorage();
+
+    }
+    
+}
+
+
+
+function editIt(event){
+    let textToedit=event.target.parentNode;
+    let textEdit=textToedit.children[0];
+    let datetoedit=textToedit.children[1];
+   
+    textToedit.innerHTML= 
+    `<span> ${textToedit.children[0].innerText}</span> 
+    <span> ${textToedit.children[1].innerText}</span>
+    <input type="text" id="textinput" placeholder=${textEdit.innerText}> <input type="date" name="" id="dateinput" placeholder=${datetoedit.innerText}> 
+     <button onclick="saveit(event)">Save</button> 
+     <button onclick="deletetask(event)"> X</button> 
+   `;
+
+    textEdit=textToedit.children[0];
+    datetoedit=textToedit.children[1];
+    textEdit.style.display="none";
+    datetoedit.style.display="none";
+    updatestorage();
+}
+
+
+
+function saveit(event){
+    let curritem=event.target.parentNode;
+
+    let curritnetasname=curritem.children[0];
+    let curritemdate=curritem.children[1];
+
+    let recurrtime=curritem.children[2];
+    let recurdate=curritem.children[3];
+     curritnetasname.innerText=recurrtime.value;
+    curritemdate.innerText=recurdate.value;
+  
+    recurdate.remove();
+    recurrtime.remove();
+    curritnetasname.style.display="inline";
+    curritemdate.style.display="inline";
+    curritem.children[2].setAttribute("onclick","editIt(event)");
+    curritem.children[2].innerText="Edit";
+    updatestorage();
+}
+
+
+    </script>
+</body>
+</html>
